@@ -1,106 +1,54 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Stack
 {
     public class Stack
     {
-        private int[] _myStack;
-        private int _nextFreeIndex;
-        private int[] _minStack;
-        private int _lastMinIndex;
-        
+
+        public LinkedList<int> stack { get; }
+        LinkedList<int> minStack;
+
         public Stack()
         {
-            _myStack = new int[0];
-            _minStack = new int[0];
-            _nextFreeIndex = 0;
-            _lastMinIndex = 0;
+            stack = new LinkedList<int>();
+            minStack = new LinkedList<int>();
         }
 
-        //O(n)
         public void Push(int value)
         {
-
-            try
+            stack.AddLast(value);
+            if (minStack.Count == 0)
             {
-                if (_nextFreeIndex == _myStack.Length)
-                    Array.Resize(ref _myStack, _myStack.Length + 1);
-
-                if (_nextFreeIndex == 0)
-                {
-                    Array.Resize(ref _minStack, 1);
-                    _minStack[0] = value;
-                    _myStack[_nextFreeIndex++] = value;
-                    return;
-                }
-
-                _myStack[_nextFreeIndex++] = value;
-
-                if (_myStack[_nextFreeIndex - 1] <= _minStack[_lastMinIndex])
-                {
-                    _lastMinIndex++;
-
-                    if (_lastMinIndex == _minStack.Length)
-                        Array.Resize(ref _minStack, _minStack.Length + 1);
-
-                    _minStack[_lastMinIndex] = value;
-                }
+                minStack.AddLast(value);
+                return;
             }
-            catch (IndexOutOfRangeException)
-            {
-                throw new IndexOutOfRangeException("The stack is full.");
-            }
+
+            if (minStack.Count > 0 && minStack.Last.Value >= value)
+                minStack.AddLast(value);
         }
 
-        //O(n)
         public int Pop()
         {
-            if (_nextFreeIndex == 0)
+            if (stack.Count == 0)
                 throw new InvalidOperationException("Empty stack.");
 
-            _nextFreeIndex--;
+            if (stack.Last.Value == minStack.Last.Value)
+                minStack.RemoveLast();
 
-            int returnValue = _myStack[_nextFreeIndex];
+            var lastItem = stack.Last.Value;
 
-            if (returnValue == _minStack[_lastMinIndex])
-            {
-                if (_lastMinIndex == 0)
-                {
-                    Array.Resize(ref _minStack, 0);
-                    _lastMinIndex = 0;
-                }
-                else
-                {
-                    Array.Resize(ref _minStack, _minStack.Length - 1);
-                    _lastMinIndex--;
-                }
+            stack.RemoveLast();
 
-            }
-
-            if (_myStack.Length == 1)
-                Array.Resize(ref _myStack, 0);
-            else if (_myStack.Length > 1)
-                Array.Resize(ref _myStack, _myStack.Length - 1);
-
-            return returnValue;
+            return lastItem;
         }
 
-        //O(1)
         public int Min()
         {
-            try
-            {
-                return _minStack[_lastMinIndex];
-            }
-            catch (IndexOutOfRangeException)
-            {
-                return -1;
-            }
-        }
+            if (minStack.Count == 0)
+                throw new InvalidOperationException("There is no minimum value");
 
-        public int[] GetFullStack()
-        {
-            return _myStack;
+            return minStack.Last.Value;
         }
     }
 }

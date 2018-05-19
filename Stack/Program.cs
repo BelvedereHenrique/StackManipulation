@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 
 namespace Stack
 {
@@ -100,22 +101,19 @@ namespace Stack
 
         private static void ShowStack()
         {
-            int[] stack = myStack.GetFullStack();
+            var stack = myStack.stack;
             Console.WriteLine("");
-            if (stack.Length > 0)
+            if (stack.Count > 0)
             {
                 Console.WriteLine("Stack:");
-                for (int i = stack.Length - 1; i >= 0; i--)
+                stack.ToList();
+                foreach (var item in stack.Reverse())
                 {
-                    Console.WriteLine($"|{stack[i]}|");
+                    Console.WriteLine($"|{item}|");
                 }
             }
             else
-            {
                 Console.WriteLine("Stack: Empty.");
-            }
-
-
         }
     }
 }
