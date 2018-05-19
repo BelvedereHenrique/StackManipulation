@@ -52,7 +52,7 @@ namespace Stack
             }
         }
 
-        //O(1)
+        //O(n)
         public int Pop()
         {
             if (_nextFreeIndex == 0)
