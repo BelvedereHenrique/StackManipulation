@@ -17,7 +17,7 @@ namespace Stack
             _lastMinIndex = 0;
         }
 
-        //O(1)
+        //O(n)
         public void Push(int value)
         {
 
